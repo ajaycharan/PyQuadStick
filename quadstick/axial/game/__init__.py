@@ -18,11 +18,11 @@ from quadstick.axial import Axial
 
 class Game(Axial):
 
-    def __init__(self, name, jsid=0):
+    def __init__(self, name, jsid=0, hidden=False):
         '''
         Creates a new Game object.
         '''
-        Axial.__init__(self, name)
+        Axial.__init__(self, name, hidden)
 
     def _get_alt_hold(self):
 
