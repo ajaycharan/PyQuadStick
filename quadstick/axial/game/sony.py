@@ -19,11 +19,11 @@ from quadstick.axial.game import Game
 
 class PS3(Game):
 
-    def __init__(self, jsid=0):
+    def __init__(self, jsid=0, hidden=False):
         '''
         Creates a new PS3 object.
         '''
-        Game.__init__(self, 'PS3', jsid)
+        Game.__init__(self, 'PS3', jsid, hidden)
 
         # Special handling for OS X
         self.switch_axis = 9 if self.platform == 'Darwin' else 7
