@@ -21,11 +21,11 @@ import time
 
 class ExtremePro3D(Game):
 
-    def __init__(self, jsid=0):
+    def __init__(self, jsid=0, hidden=False):
         '''
         Creates a new ExtremePro3D object.
         '''
-        Game.__init__(self, 'Logitech Extreme 3D Pro', jsid)
+        Game.__init__(self, 'Logitech Extreme 3D Pro', jsid, hidden)
 
         self.trigger_is_down = False
 
@@ -61,7 +61,7 @@ class ExtremePro3D(Game):
 
         Altitude and position hold are always on.
 
-        Returns demands (pitch, roll, yaw, climb) and switches (pos-hold, alt-hold, autopilot).
+        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
         '''
 
         return Game._poll(self)
@@ -78,7 +78,7 @@ class ExtremePro3D(Game):
 
         return Game._get_axis(self, self.yaw_axis)
 
-    def _get_climb(self):
+    def _get_throttle(self):
 
         return -self._get_axis3()
 

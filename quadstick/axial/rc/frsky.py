@@ -19,19 +19,19 @@ from quadstick.axial.rc import RC
 
 class Taranis(RC):
 
-    def __init__(self, jsid=0):
+    def __init__(self, jsid=0, hidden=False):
         '''
         Creates a new FrSky Taranis object.  You should set up channel mixing such that Channel 5 maps to Switch A 
         and Channel 6 to Switch B.
         '''
 
-        RC.__init__(self, 'Taranis', jsid)
+        RC.__init__(self, 'Taranis', jsid, hidden)
 
     # Default to Linux 
         self.pitch_axis  = 2
         self.roll_axis   = 1
         self.yaw_axis    = 5
-        self.climb_axis  = 0
+        self.throttle_axis  = 0
         self.switch_a_axis = 3
         self.switch_b_axis = 4
 
@@ -44,7 +44,7 @@ class Taranis(RC):
             self.pitch_axis  = 0
             self.roll_axis   = 3
             self.yaw_axis    = 1
-            self.climb_axis  = 2
+            self.throttle_axis  = 2
             self.switch_a_axis = 4
             self.switch_b_axis = 5
 
@@ -62,7 +62,7 @@ class Taranis(RC):
         Position hold: Switch A completely down
         Autopilot:     Switch B down (overrides altitude / position hold)
 
-        Returns demands (pitch, roll, yaw, climb) and switches (pos-hold, alt-hold, autopilot).
+        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
         '''
 
         return RC._poll(self)
@@ -83,18 +83,18 @@ class Taranis(RC):
 
 class TH9X(RC):
 
-    def __init__(self, jsid=0):
+    def __init__(self, jsid=0, hidden=False):
         '''
         Creates a new FrSky TH9X object.
         '''
 
-        RC.__init__(self, 'TH9X', jsid)
+        RC.__init__(self, 'TH9X', jsid, hidden)
 
     # Default to Linux 
         self.pitch_axis  = 1
         self.roll_axis   = 0
         self.yaw_axis    = 5
-        self.climb_axis  = 2
+        self.throttle_axis  = 2
         self.switch_axis = 3
 
         if self.platform == 'Windows':
@@ -105,7 +105,7 @@ class TH9X(RC):
             self.pitch_axis  = 3
             self.roll_axis   = 2
             self.yaw_axis    = 1
-            self.climb_axis  = 0
+            self.throttle_axis  = 0
             self.switch_axis = 4
 
         self.pitch_sign = +1
@@ -121,7 +121,7 @@ class TH9X(RC):
         For altitude / position hold and autopilot, see 
         http://3drobotics.com/wp-content/uploads/2014/04/IRIS-Flight-Checklist-v5.pdf
 
-        Returns demands (pitch, roll, yaw, climb) and switches (pos-hold, alt-hold, autopilot).
+        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
         '''
 
         return RC._poll(self)

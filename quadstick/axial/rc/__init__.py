@@ -16,6 +16,9 @@ rc/__init__.py - Python class for polling R/C transmitters using
 
 '''
 
+
+
+
 from quadstick.axial import Axial
 import os
 
@@ -23,25 +26,42 @@ import pygame
 
 class RC(Axial):
 
-    def __init__(self, name, jsid=0):
+    def __init__(self, name, jsid=0, hidden=False):
         '''
         Creates a new RC object.
         '''
+        Axial.__init__(self, name, jsid, hidden)
 
-        Axial.__init__(self, name)
+        # Empirically determined for Wailly cable + Frsky Taranis
+        self.PITCH_RANGE    = -0.711365, +0.896881
+        self.ROLL_RANGE     = -0.711365, +0.989685
+        self.YAW_RANGE      = -0.711365, +0.958740
+        self.THROTTLE_RANGE = -0.711365, +0.999969
+
 
     def _get_pitch(self):
     
-        return self.pitch_sign * RC._get_axis(self, self.pitch_axis)
+        return self.pitch_sign * self._get_rc_axis(self.pitch_axis, self.PITCH_RANGE)
 
     def _get_roll(self):
     
-        return self.roll_sign * RC._get_axis(self, self.roll_axis)
+        return self.roll_sign * self._get_rc_axis(self.roll_axis, self.ROLL_RANGE)
 
     def _get_yaw(self):
 
-        return self.yaw_sign * RC._get_axis(self, self.yaw_axis)
+        return self.yaw_sign * self._get_rc_axis(self.yaw_axis, self.YAW_RANGE)
  
-    def _get_climb(self):
+    def _get_throttle(self):
+        
+        return self._get_rc_axis(self.throttle_axis, self.THROTTLE_RANGE)
 
-        return Axial._get_axis(self, self.climb_axis)    
+    def _get_rc_axis(self, value, valrange):
+        
+        value = Axial._get_axis(self, value) 
+
+        if value > 0:
+            value = value / valrange[1]
+        if value < 0:
+            value = value / abs(valrange[0])
+
+        return value

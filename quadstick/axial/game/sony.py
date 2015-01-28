@@ -40,7 +40,7 @@ class PS3(Game):
 
         Altitude and position hold are always on.
 
-        Returns demands (pitch, roll, yaw, climb) and switches (pos-hold, alt-hold, autopilot).
+        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
         '''
 
         return Game._poll(self)
@@ -57,7 +57,7 @@ class PS3(Game):
 
         return Game._get_axis(self, 0)
 
-    def _get_climb(self):
+    def _get_throttle(self):
 
         return -Game._get_axis(self, 1)
 

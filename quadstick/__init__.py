@@ -24,7 +24,7 @@ import traceback
 
 class QuadStick(object):
 
-    def __init__(self, name):
+    def __init__(self, name, hidden=False):
         '''
         Creates a new QuadStick object.
         '''
@@ -33,11 +33,10 @@ class QuadStick(object):
         pygame.init()
         pygame.display.init()
         
-        self.screen = pygame.display.set_mode((500,280), pygame.locals.RESIZABLE)
-
-        self.font = pygame.font.SysFont('Courier', 20)
-
-        pygame.display.set_caption('QuadStick: ' + name)
+        if not hidden:
+            self.screen = pygame.display.set_mode((500,280), pygame.locals.RESIZABLE)
+            self.font = pygame.font.SysFont('Courier', 20)
+            pygame.display.set_caption('QuadStick: ' + name)
 
         # Supports keyboard polling
         self.keys = []
@@ -54,6 +53,8 @@ class QuadStick(object):
 
         self.paused = False
 
+        self.hidden = hidden
+
     def __str__(self):
         '''
         Returns a string representation of this QuadStick object
@@ -62,18 +63,20 @@ class QuadStick(object):
 
     def _poll(self, demands, switches):
 
-        self._show_demand(demands, 0, -1, 'Pitch')
-        self._show_demand(demands, 1, -1, 'Roll')
-        self._show_demand(demands, 2, +1, 'Yaw')
-        self._show_demand(demands, 3, +1, 'Climb')
- 
-        self._show_switch(switches[2], 2, 'Autopilot')
+        if not self.hidden:
 
-        # Autopilot turns off altitude hold, position hold
-        self._show_switch(switches[0] and not switches[2], 0, 'Altitude hold')
-        self._show_switch(switches[1] and not switches[2], 1, 'Position hold')
+            self._show_demand(demands, 0, -1, 'Pitch')
+            self._show_demand(demands, 1, -1, 'Roll')
+            self._show_demand(demands, 2, +1, 'Yaw')
+            self._show_demand(demands, 3, +1, 'Throttle')
+     
+            self._show_switch(switches[2], 2, 'Autopilot')
 
-        pygame.display.flip()
+            # Autopilot turns off altitude hold, position hold
+            self._show_switch(switches[0] and not switches[2], 0, 'Altitude hold')
+            self._show_switch(switches[1] and not switches[2], 1, 'Position hold')
+
+            pygame.display.flip()
 
         return demands, switches
  
@@ -167,7 +170,7 @@ class QuadStick(object):
         if demand < 0:
             color =  (255, 0, 0)
 
-        x = 200			# X coordinate for zero demand
+        x = 250			# X coordinate for zero demand
         y = 20 + index * 30
         w = 100			# width of rectangel for maximum demand
         h = 20

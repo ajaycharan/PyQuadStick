@@ -21,16 +21,16 @@ import pygame.locals
 
 class Keyboard(QuadStick):
 
-    def __init__(self):
+    def __init__(self, hidden=False):
         '''
         Creates a new Keyboard object.
         '''
-        QuadStick.__init__(self, 'Keyboard')
+        QuadStick.__init__(self, 'Keyboard', hidden)
 
         self.pitch = 0
         self.roll = 0
         self.yaw = 0
-        self.climb = 0
+        self.throttle = 0
 
     def poll(self):
         '''
@@ -45,7 +45,7 @@ class Keyboard(QuadStick):
 
         Altitude and position hold are always on.
 
-        Returns demands (pitch, roll, yaw, climb) and switches (pos-hold, alt-hold, autopilot).
+        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
         '''
 
         for event in self.keys:
@@ -56,14 +56,14 @@ class Keyboard(QuadStick):
                 self.pitch = self._key2demand(self.pitch, event, 264, 258) # 8, 2
                 self.roll  = self._key2demand(self.roll,  event, 262, 260) # 6, 4
                 self.yaw   = self._key2demand(self.yaw,   event, 256, 271) # 0, Enter
-                self.climb = self._key2demand(self.climb, event, 259, 265) # 3, 9
+                self.throttle = self._key2demand(self.throttle, event, 259, 265) # 3, 9
 
                 # Spacebar toggles autopilot
                 if event.key == 32:
                     QuadStick._toggle_autopilot(self, event.type == pygame.locals.KEYDOWN)
 
         # Altitude and position hold are always on
-        return QuadStick._poll(self, (self.pitch, self.roll, self.yaw, self.climb), (True, True, self.auto))
+        return QuadStick._poll(self, (self.pitch, self.roll, self.yaw, self.throttle), (True, True, self.auto))
 
     def _key2demand(self, demand, event, lokey, hikey):
 

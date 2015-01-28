@@ -19,17 +19,17 @@ from quadstick.axial.rc import RC
 
 class DX8(RC):
 
-    def __init__(self, jsid=0):
+    def __init__(self, jsid=0, hidden=False):
         '''
         Creates a new Spketrum DX8 object.
         '''
-        RC.__init__(self, 'Spektrum', jsid)
+        RC.__init__(self, 'Spektrum', jsid, hidden)
 
         # Default to Linux 
         self.pitch_axis  = 2
         self.roll_axis   = 1
         self.yaw_axis    = 5
-        self.climb_axis  = 0
+        self.throttle_axis  = 0
         self.switch_axis = 3
 
         if self.platform == 'Windows':
@@ -40,7 +40,7 @@ class DX8(RC):
             self.pitch_axis  = 0
             self.roll_axis   = 3
             self.yaw_axis    = 1
-            self.climb_axis  = 2
+            self.throttle_axis  = 2
             self.switch_axis = 4
 
         self.pitch_sign = -1
@@ -61,7 +61,7 @@ class DX8(RC):
 
         AUX 3 dial controls autopilot: takeoff at extreme clockwise, then turn to 12:00 for autopilot.
 
-        Returns demands (pitch, roll, yaw, climb) and switches (pos-hold, alt-hold, autopilot).
+        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
         '''
 
         return RC._poll(self)
