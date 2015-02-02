@@ -1,5 +1,5 @@
 '''
-quadstick/__init__.py - Python class for polling quadrotor flight-simulator controllers
+quadstick/__init__.py - Python class for polling quadcopter flight-simulator controllers
 
     Copyright (C) 2014 Simon D. Levy
 
@@ -175,12 +175,16 @@ class QuadStick(object):
         w = 100			# width of rectangel for maximum demand
         h = 20
 
-        # Draw a black rectangle over whole area
-        pygame.draw.rect(self.screen, (0,0,0), (x-w-1, y, x+w, 20))
+        # Erase previous 
+        pygame.draw.rect(self.screen, (0,0,0), (x-w-1, y, x-w/2, h))
 
-        # Draw a colorful rectangle to represent the demand
-        pygame.draw.rect(self.screen, color, (x, y, demand*w, 20))
+        # Draw a white hollow rectangle to represent the limits
+        pygame.draw.rect(self.screen, (255,255,255), (x-w-1, y, x-w/2, h), 1)
 
+        # Draw a colorful filled rectangle to represent the demand
+        pygame.draw.rect(self.screen, color, (x, y, demand*w, h))
+
+        # Draw a label for the axis
         self._draw_label(label, y)
 
     def _draw_label_in_row(self, text, row, color=(255,255,255)):
