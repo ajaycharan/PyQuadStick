@@ -35,7 +35,7 @@ class Taranis(RC):
         self.roll_axis      = 1
         self.yaw_axis       = 3
         self.throttle_axis  = 0
-        self.switch_axis    = 4
+        self.switch_axis    = 5
 
         if self.platform == 'Windows':
             self.yaw_axis    = 5
