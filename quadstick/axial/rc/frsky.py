@@ -1,5 +1,5 @@
 '''
-frsky.py - Python class for polling FrSky R/C transmitters
+frsky.py - Support for FrSky R/C transmitters
 
     Copyright (C) 2014 Simon D. Levy
 
@@ -18,22 +18,25 @@ frsky.py - Python class for polling FrSky R/C transmitters
 from quadstick.axial.rc import RC
 
 class Taranis(RC):
-
+    '''
+    Class for FrSky Taranis transmitter used with mini-USB cable.  
+    You should set up channel mixing such that Channel 5 maps to Switch A and Channel 6 to Switch B.
+    '''
+ 
     def __init__(self, jsid=0, hidden=False):
         '''
-        Creates a new FrSky Taranis object.  You should set up channel mixing such that Channel 5 maps to Switch A 
-        and Channel 6 to Switch B.
+        Creates a new Taranis object.
         '''
 
         RC.__init__(self, 'Taranis', jsid, hidden)
 
-    # Default to Linux 
+        # Default to Linux 
         self.pitch_axis  = 2
         self.roll_axis   = 1
-        self.yaw_axis    = 5
+        self.yaw_axis    = 3
         self.throttle_axis  = 0
-        self.switch_a_axis = 3
-        self.switch_b_axis = 4
+        self.switch_a_axis = 4
+        self.switch_b_axis = 5
 
         if self.platform == 'Windows':
             self.yaw_axis    = 3
@@ -67,25 +70,31 @@ class Taranis(RC):
 
         return RC._poll(self)
 
+    def _convert_axis(self, index, value):
+
+        return value
+
     def _get_alt_hold(self):
 
         # POS-HOLD implies ALT-HOLD
-        return (not self._get_autopilot()) and (self._get_pos_hold() or RC._get_axis(self, self.switch_a_axis) > 0)
+        return (not self._get_autopilot()) and (self._get_pos_hold() or RC._get_axis(self, self.switch_a_axis) == 0)
 
     def _get_pos_hold(self):
 
-        return (not self._get_autopilot()) and (RC._get_axis(self, self.switch_a_axis)  > .9)
+        return (not self._get_autopilot()) and (RC._get_axis(self, self.switch_a_axis) > 0.9)
 
     def _get_autopilot(self):
 
-        return RC._get_axis(self, self.switch_b_axis)  > 0
-
+        return RC._get_axis(self, self.switch_b_axis)  > -1
 
 class TH9X(RC):
+    '''
+    Class for FrSky TH9X transmitter used with Wailly PPM->USB cable.
+    '''
 
     def __init__(self, jsid=0, hidden=False):
         '''
-        Creates a new FrSky TH9X object.
+        Creates a new TH9X object.
         '''
 
         RC.__init__(self, 'TH9X', jsid, hidden)
@@ -126,21 +135,29 @@ class TH9X(RC):
 
         return RC._poll(self)
 
+    def _convert_axis(self, index, value):
 
+        maxval = 1
+
+        if index == 0:
+            maxval = 0.9
+        elif index == 1:
+            maxval = 0.8
+
+        return value / 0.7125 if value < 0 else value / maxval
 
     def _get_alt_hold(self):
 
-        # POS-HOLD implies ALT-HOLD
-        return self._get_pos_hold() or RC._get_axis(self, self.switch_axis) > 0.4
+        switch = RC._get_axis(self, self.switch_axis) 
+
+        return  switch > -0.3 and switch < 0.1
 
     def _get_pos_hold(self):
 
-        switch = RC._get_axis(self, self.switch_axis)
-     
-        return switch < 0 and switch > -0.3
+        switch = RC._get_axis(self, self.switch_axis) 
+
+        return  switch >= 0 and switch < 0.2
 
     def _get_autopilot(self):
 
-        switch = RC._get_axis(self, self.switch_axis)
-
-        return switch >= 0 and switch < 0.4
+        return RC._get_axis(self, self.switch_axis) > 0.1

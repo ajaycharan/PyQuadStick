@@ -1,5 +1,5 @@
 '''
-spektrum.py - Python class for Spketrum R/C transmitters
+spektrum.py - Support for Spketrum R/C transmitters.
 
     Copyright (C) 2014 Simon D. Levy
 
@@ -18,10 +18,13 @@ spektrum.py - Python class for Spketrum R/C transmitters
 from quadstick.axial.rc import RC
 
 class DX8(RC):
+    '''
+    Class for Spektrum DX8 transmitter used with Wailly PPM->USB cable.
+    '''
 
     def __init__(self, jsid=0, hidden=False):
         '''
-        Creates a new Spketrum DX8 object.
+        Creates a new DX8 object.
         '''
         RC.__init__(self, 'Spektrum', jsid, hidden)
 
@@ -66,13 +69,17 @@ class DX8(RC):
 
         return RC._poll(self)
 
+    def _convert_axis(self, index, value):
+
+        return value / (.66 if value < 0 else 0.67)
+ 
     def _get_alt_hold(self):
 
-        return RC._get_axis(self, self.switch_axis) > -0.1
+        return RC._get_axis(self, self.switch_axis) <= 0
 
     def _get_pos_hold(self):
      
-        return RC._get_axis(self, self.switch_axis) > +0.1
+        return RC._get_axis(self, self.switch_axis) < 0
 
     def _get_autopilot(self):
 

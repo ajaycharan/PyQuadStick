@@ -1,6 +1,5 @@
 '''
-rc/__init__.py - Python class for polling R/C transmitters using 
-                 Wailly PPM-to-USB cable.
+rc/__init__.py - Python class for polling R/C transmitters
 
     Copyright (C) 2014 Simon D. Levy
 
@@ -25,16 +24,9 @@ class RC(Axial):
 
     def __init__(self, name, jsid=0, hidden=False):
         '''
-        Creates a new RC object.  To use this with a real R/C transmitter, you should:
-
-        (1) Move all sticks to center, run qstest.py, and adjust the trims to get a centered (blue) readout.
-
-        (2) If necessary, adjust the self.AXIS_MIN value below to compensate inadequate minimum value.
+        Creates a new RC object.  Each subclass must implement the _convert_axis method.
         '''
         Axial.__init__(self, name, jsid, hidden)
-
-        # Empirically determined for Wailly cable + Frsky Taranis
-        self.AXIS_MIN = -0.711365
 
     def _get_pitch(self):
 
@@ -43,7 +35,6 @@ class RC(Axial):
     def _get_roll(self):
     
         return self.roll_sign * self._get_rc_axis(self.roll_axis)
-        
 
     def _get_yaw(self):
 
@@ -55,6 +46,4 @@ class RC(Axial):
 
     def _get_rc_axis(self, index):
         
-        value = Axial._get_axis(self, index) 
- 
-        return value/abs(self.AXIS_MIN) if value < 0 else value
+        return self._convert_axis(index, Axial._get_axis(self, index))
