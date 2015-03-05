@@ -31,25 +31,22 @@ class Taranis(RC):
         RC.__init__(self, 'Taranis', jsid, hidden)
 
         # Default to Linux 
-        self.pitch_axis  = 2
-        self.roll_axis   = 1
-        self.yaw_axis    = 3
+        self.pitch_axis     = 2
+        self.roll_axis      = 1
+        self.yaw_axis       = 3
         self.throttle_axis  = 0
-        self.switch_a_axis = 4
-        self.switch_b_axis = 5
+        self.switch_axis    = 4
 
         if self.platform == 'Windows':
-            self.yaw_axis    = 3
-            self.switch_a_axis = 5
-            self.switch_b_axis = 4
-
+            self.yaw_axis    = 5
+            self.switch_axis = 3
+            
         elif self.platform == 'Darwin':
-            self.pitch_axis  = 0
-            self.roll_axis   = 3
-            self.yaw_axis    = 1
-            self.throttle_axis  = 2
-            self.switch_a_axis = 4
-            self.switch_b_axis = 5
+            self.pitch_axis    = 0
+            self.roll_axis     = 3
+            self.yaw_axis      = 1
+            self.throttle_axis = 2
+            self.switch_axis   = 4
 
         self.pitch_sign = +1
         self.roll_sign  = -1
@@ -76,16 +73,17 @@ class Taranis(RC):
 
     def _get_alt_hold(self):
 
-        # POS-HOLD implies ALT-HOLD
-        return (not self._get_autopilot()) and (self._get_pos_hold() or RC._get_axis(self, self.switch_a_axis) == 0)
+        switch = RC._get_axis(self, self.switch_axis)
+        return switch > -1 and switch < +1
 
     def _get_pos_hold(self):
 
-        return (not self._get_autopilot()) and (RC._get_axis(self, self.switch_a_axis) > 0.9)
+        return RC._get_axis(self, self.switch_axis) > 0.9
 
     def _get_autopilot(self):
-
-        return RC._get_axis(self, self.switch_b_axis)  > -1
+        
+        # XXX Autopilot currently not supported for Taranis.
+        return False
 
 class TH9X(RC):
     '''
