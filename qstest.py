@@ -23,7 +23,6 @@ qstest.py - PyQuadStick test program
 from quadstick.axial.rc.spektrum import DX8 as Controller
 #from quadstick.axial.rc.frsky import Taranis as Controller
 #from quadstick.axial.rc.frsky import TH9X as Controller
-#from quadstick.keyboard import Keyboard as Controller
 
 # =============================================================================
 
