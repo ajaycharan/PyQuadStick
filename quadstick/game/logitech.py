@@ -31,17 +31,9 @@ class ExtremePro3D(Game):
 
         self.yaw_axis = 3 if self.platform == 'Windows' else 2
 
-        self.message('Please move throttle to mid-range\nto begin.')
+    def _startup_message(self):
 
-        while True:
-            if self._get_axis3() != 0:
-                break
-
-        while True:
-            if abs(self._get_axis3()) < .05:
-                break
-
-        self.clear()
+        return 'Please cycle throttle to begin.'
 
     def _get_axis3(self):
 
@@ -80,9 +72,39 @@ class ExtremePro3D(Game):
 
     def _get_throttle(self):
 
-        return -self._get_axis3()
+        return (-self._get_axis3() + 1) / 2
 
     def _get_autopilot(self):
 
-         # Trigger toggles autopilot
-        return Game._get_autopilot(self, 0)
+        # Trigger toggles autopilot
+        return Game._get_autopilot(self, 1)
+
+
+    def _get_alt_hold(self, button):
+
+        self._count(button)
+
+        return self.buttonstate in [2,3,4]
+
+    def _get_pos_hold(self, button):
+
+        return self.buttonstate == 4
+
+        return False
+
+    def _count(self, button):
+        
+        if self.joystick.get_button(button):
+            if self.buttonstate == 0:
+                self.buttonstate = 1
+            elif self.buttonstate == 2:
+                self.buttonstate = 3
+            elif self.buttonstate == 4:
+                self.buttonstate = 5
+        else:
+            if self.buttonstate == 1:
+                self.buttonstate = 2            
+            elif self.buttonstate == 3:
+                self.buttonstate = 4
+            elif self.buttonstate == 5:
+                self.buttonstate = 0

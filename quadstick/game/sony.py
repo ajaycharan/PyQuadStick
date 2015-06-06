@@ -28,6 +28,10 @@ class PS3(Game):
         # Special handling for OS X
         self.switch_axis = 9 if self.platform == 'Darwin' else 7
 
+    def _startup(self):
+
+        return
+
     def poll(self):
         '''
         Polls the Sony PS3 controller:
@@ -59,9 +63,34 @@ class PS3(Game):
 
     def _get_throttle(self):
 
-        return -Game._get_axis(self, 1)
+        return -Game._get_axis(self, 1) / 2 + .5
 
     def _get_autopilot(self):
 
         # Right trigger toggles autopilot
         return Game._get_autopilot(self, self.switch_axis)
+
+    def _get_alt_hold(self):
+ 
+        return True
+
+    def _get_pos_hold(self):
+
+        self._count(0)
+
+        return self.buttonstate == 2
+
+    def _count(self, button):
+        
+        if self.joystick.get_button(button):
+            if self.buttonstate == 0:
+                self.buttonstate = 1
+            elif self.buttonstate == 2:
+                self.buttonstate = 3
+        else:
+            if self.buttonstate == 1:
+                self.buttonstate = 2            
+            elif self.buttonstate == 3:
+                self.buttonstate = 0
+
+

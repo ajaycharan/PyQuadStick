@@ -15,18 +15,20 @@ rc/__init__.py - Python class for polling R/C transmitters
 
 '''
 
-from quadstick.game import Game
 import os
-
 import pygame
+import quadstick
 
-class RC(Game):
+class RC(quadstick.QuadStick):
 
     def __init__(self, name, jsid=0, hidden=False):
         '''
         Creates a new RC object.  Each subclass must implement the _convert_axis method.
         '''
-        Game.__init__(self, name, jsid, hidden)
+        quadstick.QuadStick.__init__(self, name, jsid, hidden)
+
+        # Support non-centering throttle stick for display
+        self._throttle_factor = 1
 
     def _get_pitch(self):
 
@@ -41,9 +43,13 @@ class RC(Game):
         return self.yaw_sign * self._get_rc_axis(self.yaw_axis)
 
     def _get_throttle(self):
-        
-        return self._get_rc_axis(self.throttle_axis)
+
+        return (self._get_rc_axis(self.throttle_axis) + 1) / 2
 
     def _get_rc_axis(self, index):
         
-        return self._convert_axis(index, Game._get_axis(self, index))
+        return self._convert_axis(index, quadstick.QuadStick._get_axis(self, index))
+
+    def _startup_message(self):
+
+        return 'Please cycle throttle \nand switch to begin.'

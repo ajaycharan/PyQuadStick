@@ -20,7 +20,7 @@ import pygame.locals
 from platform import platform
 import sys
 import traceback
-
+import os
 
 class QuadStick(object):
 
@@ -60,6 +60,14 @@ class QuadStick(object):
         self.joystick.init()
         self.joystick.get_axis(jsid)
 
+        # Play quadcopter sound
+        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+        datapath = os.path.abspath(os.path.dirname(__file__)) + '/data'
+        print(datapath)
+        self.sound = pygame.mixer.Sound(datapath + '/quadcopter.wav')
+        self.playing = False
+
+        self.ready = False
 
     def __str__(self):
         '''
@@ -72,9 +80,35 @@ class QuadStick(object):
         pygame.event.pump()   
 
 
+    def _startup(self):
+
+        if not self.ready:
+
+            self.message(self._startup_message())
+
+            while True:
+                self._pump()
+                if self._get_throttle()  > .5:
+                    break
+
+            while True:
+                self._pump()
+                if self._get_throttle()  < .05 and not self._get_alt_hold():
+                    break
+
+            self.clear()
+
+            self.ready = True
+
     def _poll(self):
 
-        self._pump()   
+        self._pump()
+
+        self._startup()
+
+        if not self.playing:
+            #self.sound.play(loops=-1) # continuous loop
+            self.playing = True
 
         demands = self._get_pitch(), self._get_roll(), self._get_yaw(), self._get_throttle()
 
@@ -85,7 +119,7 @@ class QuadStick(object):
             self._show_demand(demands, 0, -1, 'Pitch')
             self._show_demand(demands, 1, -1, 'Roll')
             self._show_demand(demands, 2, +1, 'Yaw')
-            self._show_demand(demands, 3, +1, 'Throttle')
+            self._show_demand(demands, 3, +1, 'Throttle', self._throttle_factor) 
      
             self._show_switch(switches[2], 2, 'Autopilot')
 
@@ -94,6 +128,9 @@ class QuadStick(object):
             self._show_switch(switches[1] and not switches[2], 1, 'Position hold')
 
             pygame.display.flip()
+
+        # Modulate sound by throttle
+        self.sound.set_volume(demands[3])
 
         return demands, switches
  
@@ -174,7 +211,7 @@ class QuadStick(object):
 
         self._draw_label(label, y-10)
 
-    def _show_demand(self, demands, index, sign, label):
+    def _show_demand(self, demands, index, sign, label, throttle_factor=0):
 
         # color for no-demand baseline
         color = (0, 0, 255) 
@@ -187,16 +224,21 @@ class QuadStick(object):
         if demand < 0:
             color =  (255, 0, 0)
 
-        x = 250			# X coordinate for zero demand
-        y = 20 + index * 30
         w = 100			# width of rectangel for maximum demand
         h = 20
+
+        x = 250
+        y = 20 + index * 30
 
         # Erase previous 
         pygame.draw.rect(self.screen, (0,0,0), (x-w-1, y, x-w/2, h))
 
         # Draw a white hollow rectangle to represent the limits
         pygame.draw.rect(self.screen, (255,255,255), (x-w-1, y, x-w/2, h), 1)
+
+        # Special handling for throttle
+        x -= w * throttle_factor
+        w += w * throttle_factor
 
         # Draw a colorful filled rectangle to represent the demand
         pygame.draw.rect(self.screen, color, (x, y, demand*w, h))
