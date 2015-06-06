@@ -15,7 +15,7 @@ sony.py - Python class for Sony PlayStation 3 controller
 
 '''
 
-from quadstick.axial.game import Game
+from quadstick.game import Game
 
 class PS3(Game):
 

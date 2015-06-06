@@ -15,7 +15,7 @@ frsky.py - Support for FrSky R/C transmitters
 
 '''
 
-from quadstick.axial.rc import RC
+from quadstick.rc import RC
 
 class Taranis(RC):
     '''

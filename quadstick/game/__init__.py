@@ -14,15 +14,15 @@ game/__init__.py - Python class for polling game controllers
     GNU General Public License for more details.
 '''
 
-from quadstick.axial import Axial
+from quadstick import QuadStick
 
-class Game(Axial):
+class Game(QuadStick):
 
     def __init__(self, name, jsid=0, hidden=False):
         '''
         Creates a new Game object.
         '''
-        Axial.__init__(self, name, hidden)
+        QuadStick.__init__(self, name, hidden)
 
     def _get_alt_hold(self):
 
@@ -36,4 +36,4 @@ class Game(Axial):
 
     def _get_autopilot(self, button):
 
-        return Axial._toggle_autopilot(self, self.joystick.get_button(button))
+        return QuadStick._toggle_autopilot(self, self.joystick.get_button(button))

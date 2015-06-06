@@ -24,7 +24,7 @@ import traceback
 
 class QuadStick(object):
 
-    def __init__(self, name, hidden=False):
+    def __init__(self, name, jsid=0, hidden=False):
         '''
         Creates a new QuadStick object.
         '''
@@ -55,13 +55,30 @@ class QuadStick(object):
 
         self.hidden = hidden
 
+        pygame.joystick.init()
+        self.joystick = pygame.joystick.Joystick(jsid)
+        self.joystick.init()
+        self.joystick.get_axis(jsid)
+
+
     def __str__(self):
         '''
         Returns a string representation of this QuadStick object
         '''
         return self.name
 
-    def _poll(self, demands, switches):
+    def _pump(self):
+
+        pygame.event.pump()   
+
+
+    def _poll(self):
+
+        self._pump()   
+
+        demands = self._get_pitch(), self._get_roll(), self._get_yaw(), self._get_throttle()
+
+        switches = self._get_alt_hold(), self._get_pos_hold(), self._get_autopilot()
 
         if not self.hidden:
 
@@ -209,3 +226,15 @@ class QuadStick(object):
             self.toggled = False
 
         return self.auto
+
+    def _get_axis(self, k):
+
+        return self.joystick.get_axis(k)
+
+    def _get_button(self, k):
+
+        return self.joystick.get_button(k)
+
+    def _get_keys(self):
+
+        return pygame.event.get()

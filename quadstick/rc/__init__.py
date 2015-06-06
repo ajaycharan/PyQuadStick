@@ -15,18 +15,18 @@ rc/__init__.py - Python class for polling R/C transmitters
 
 '''
 
-from quadstick.axial import Axial
+from quadstick.game import Game
 import os
 
 import pygame
 
-class RC(Axial):
+class RC(Game):
 
     def __init__(self, name, jsid=0, hidden=False):
         '''
         Creates a new RC object.  Each subclass must implement the _convert_axis method.
         '''
-        Axial.__init__(self, name, jsid, hidden)
+        Game.__init__(self, name, jsid, hidden)
 
     def _get_pitch(self):
 
@@ -46,4 +46,4 @@ class RC(Axial):
 
     def _get_rc_axis(self, index):
         
-        return self._convert_axis(index, Axial._get_axis(self, index))
+        return self._convert_axis(index, Game._get_axis(self, index))

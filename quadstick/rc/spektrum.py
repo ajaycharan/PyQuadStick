@@ -15,7 +15,7 @@ spektrum.py - Support for Spketrum R/C transmitters.
 
 '''
 
-from quadstick.axial.rc import RC
+from quadstick.rc import RC
 
 class DX8(RC):
     '''

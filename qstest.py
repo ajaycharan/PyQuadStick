@@ -18,11 +18,10 @@ qstest.py - PyQuadStick test program
 
 # Choose your controller ======================================================
 
-from quadstick.axial.game.logitech import ExtremePro3D as Controller
-#from quadstick.axial.game.sony import PS3 as Controller
-#from quadstick.axial.rc.spektrum import DX8 as Controller
-#from quadstick.axial.rc.frsky import Taranis as Controller
-#from quadstick.axial.rc.frsky import TH9X as Controller
+#from quadstick.game.logitech import ExtremePro3D as Controller
+#from quadstick.game.sony import PS3 as Controller
+from quadstick.rc.spektrum import DX8 as Controller
+#from quadstick.rc.frsky import Taranis as Controller
 
 # =============================================================================
 

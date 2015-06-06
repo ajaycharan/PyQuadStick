@@ -15,7 +15,7 @@ logitech.py - Python class for Logitech joysticks
 
 '''
 
-from quadstick.axial.game import Game
+from quadstick.game import Game
 
 import time
 
