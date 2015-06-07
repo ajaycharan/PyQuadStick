@@ -71,12 +71,12 @@ class Taranis(RC):
 
         return value
 
-    def _get_alt_hold(self):
+    def _get_alt_hold_request(self):
 
         switch = RC._get_axis(self, self.switch_axis)
         return switch > -1 and switch < +1
 
-    def _get_pos_hold(self):
+    def _get_pos_hold_request(self):
 
         return RC._get_axis(self, self.switch_axis) > 0.9
 
@@ -144,18 +144,18 @@ class TH9X(RC):
 
         return value / 0.7125 if value < 0 else value / maxval
 
-    def _get_alt_hold(self):
+    def _get_alt_hold_request(self):
 
         switch = RC._get_axis(self, self.switch_axis) 
 
         return  switch > -0.3 and switch < 0.1
 
-    def _get_pos_hold(self):
+    def _get_pos_hold_request(self):
 
         switch = RC._get_axis(self, self.switch_axis) 
 
         return  switch >= 0 and switch < 0.2
 
-    def _get_autopilot(self):
+    def _get_autopilot_request(self):
 
         return RC._get_axis(self, self.switch_axis) > 0.1

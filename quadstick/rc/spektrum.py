@@ -73,11 +73,11 @@ class DX8(RC):
 
         return value / (.66 if value < 0 else 0.67)
  
-    def _get_alt_hold(self):
+    def _get_alt_hold_request(self):
 
         return RC._get_axis(self, self.switch_axis) <= 0
 
-    def _get_pos_hold(self):
+    def _get_pos_hold_request(self):
      
         return RC._get_axis(self, self.switch_axis) < 0
 

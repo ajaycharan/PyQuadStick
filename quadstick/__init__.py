@@ -29,6 +29,9 @@ class QuadStick(object):
         Creates a new QuadStick object.
         '''
 
+        # Set constants
+        self.BAND = 0.2 # Must be these close to neutral for hold / autopilot
+
         # Init pygame
         pygame.init()
         pygame.display.init()
@@ -93,7 +96,7 @@ class QuadStick(object):
 
             while True:
                 self._pump()
-                if self._get_throttle()  < .05 and not self._get_alt_hold():
+                if self._get_throttle()  < .05 and not self._get_alt_hold_request():
                     break
 
             self.clear()
@@ -278,6 +281,25 @@ class QuadStick(object):
 
         return self.joystick.get_button(k)
 
-    def _get_keys(self):
+    def _get_alt_hold(self):
 
-        return pygame.event.get()
+        return self._get_alt_hold_request() and self._neutral_sticks()
+
+    def _get_pos_hold(self):
+
+        return self._get_pos_hold_request() and self._neutral_sticks()
+
+    def _neutral_sticks(self):
+
+        return self._safeband(self._get_throttle(), 0.5) and \
+                self._safestick(self._get_pitch()) and \
+                self._safestick(self._get_roll()) and \
+                self._safestick(self._get_yaw())
+
+    def _safestick(self, value):
+
+        return self._safeband(value, 0)
+
+    def _safeband(self, value, middle):
+
+        return value > (middle-self.BAND) and value < (middle+self.BAND)

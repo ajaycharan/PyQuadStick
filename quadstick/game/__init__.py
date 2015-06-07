@@ -31,31 +31,33 @@ class Game(QuadStick):
 
         return QuadStick._toggle_autopilot(self, self.joystick.get_button(self.autobutton))
             
-    def _get_alt_hold(self):
+    def _get_alt_hold_request(self):
 
         self._count()
 
         return self.buttonstate in [2,3,4]
 
-    def _get_pos_hold(self):
+    def _get_pos_hold_request(self):
 
         self._count()
 
         return self.buttonstate == 4
 
     def _count(self):
+
+        if self._neutral_sticks():
         
-        if self.joystick.get_button(self.holdbutton):
-            if self.buttonstate == 0:
-                self.buttonstate = 1
-            elif self.buttonstate == 2:
-                self.buttonstate = 3
-            elif self.buttonstate == 4:
-                self.buttonstate = 5
-        else:
-            if self.buttonstate == 1:
-                self.buttonstate = 2            
-            elif self.buttonstate == 3:
-                self.buttonstate = 4
-            elif self.buttonstate == 5:
-                self.buttonstate = 0
+            if self.joystick.get_button(self.holdbutton):
+                if self.buttonstate == 0:
+                    self.buttonstate = 1
+                elif self.buttonstate == 2:
+                    self.buttonstate = 3
+                elif self.buttonstate == 4:
+                    self.buttonstate = 5
+            else:
+                if self.buttonstate == 1:
+                    self.buttonstate = 2            
+                elif self.buttonstate == 3:
+                    self.buttonstate = 4
+                elif self.buttonstate == 5:
+                    self.buttonstate = 0
