@@ -27,9 +27,6 @@ class RC(quadstick.QuadStick):
         '''
         quadstick.QuadStick.__init__(self, name, jsid, hidden)
 
-        # Support non-centering throttle stick for display
-        self._throttle_factor = 1
-
     def _get_pitch(self):
 
         return self.pitch_sign * self._get_rc_axis(self.pitch_axis)

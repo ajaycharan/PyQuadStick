@@ -119,7 +119,7 @@ class QuadStick(object):
             self._show_demand(demands, 0, -1, 'Pitch')
             self._show_demand(demands, 1, -1, 'Roll')
             self._show_demand(demands, 2, +1, 'Yaw')
-            self._show_demand(demands, 3, +1, 'Throttle', self._throttle_factor) 
+            self._show_demand(demands, 3, +1, 'Throttle') 
      
             self._show_switch(switches[2], 2, 'Autopilot')
 
@@ -211,7 +211,7 @@ class QuadStick(object):
 
         self._draw_label(label, y-10)
 
-    def _show_demand(self, demands, index, sign, label, throttle_factor=0):
+    def _show_demand(self, demands, index, sign, label):
 
         # color for no-demand baseline
         color = (0, 0, 255) 
@@ -237,8 +237,9 @@ class QuadStick(object):
         pygame.draw.rect(self.screen, (255,255,255), (x-w-1, y, x-w/2, h), 1)
 
         # Special handling for throttle
-        x -= w * throttle_factor
-        w += w * throttle_factor
+        if index == 3:
+            x -= w
+            w += w
 
         # Draw a colorful filled rectangle to represent the demand
         pygame.draw.rect(self.screen, color, (x, y, demand*w, h))

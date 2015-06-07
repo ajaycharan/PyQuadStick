@@ -24,14 +24,38 @@ class Game(QuadStick):
         '''
         QuadStick.__init__(self, name, hidden)
 
-        # Support non-centering throttle stick for display
-        self._throttle_factor = 1
-
         # Support alt/pos-hold through repeated button clicks
         self.buttonstate = 0
 
-    def _get_autopilot(self, button):
+    def _get_autopilot(self):
 
-        return QuadStick._toggle_autopilot(self, self.joystick.get_button(button))
+        return QuadStick._toggle_autopilot(self, self.joystick.get_button(self.autobutton))
             
+    def _get_alt_hold(self):
 
+        self._count()
+
+        return self.buttonstate in [2,3,4]
+
+    def _get_pos_hold(self):
+
+        self._count()
+
+        return self.buttonstate == 4
+
+    def _count(self):
+        
+        if self.joystick.get_button(self.holdbutton):
+            if self.buttonstate == 0:
+                self.buttonstate = 1
+            elif self.buttonstate == 2:
+                self.buttonstate = 3
+            elif self.buttonstate == 4:
+                self.buttonstate = 5
+        else:
+            if self.buttonstate == 1:
+                self.buttonstate = 2            
+            elif self.buttonstate == 3:
+                self.buttonstate = 4
+            elif self.buttonstate == 5:
+                self.buttonstate = 0
