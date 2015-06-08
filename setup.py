@@ -22,16 +22,19 @@ along with this code.  If not, see <http://www.gnu.org/licenses/>.
 #from distutils.core import setup
 from setuptools import setup
 
+soundfiles = [('data/quadcopter%s.wav' % freq) for freq in ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100']]
+
 setup (name = 'PyQuadStick',
     version = '0.1',
     install_requires = ['pygame'],
     description = 'Quadrotor Flight Control in Python',
     packages = ['quadstick', 'quadstick.game', 'quadstick.rc', 'quadstick.data'],
-    package_data = {'quadstick' : ['data/quadcopter.wav', 'data/quadcopter10.wav']},
+    package_data = {'quadstick' : soundfiles},
     author='Simon D. Levy',
     author_email='simon.d.levy@gmail.com',
     url='http://home.wlu.edu/~levys/software/pyquadstick',
     license='LGPL',
     platforms='Linux; Windows; OS X'
     )
+
     
