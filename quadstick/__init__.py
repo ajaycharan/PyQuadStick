@@ -85,6 +85,13 @@ class QuadStick(object):
         pygame.event.pump()   
 
 
+    def setVolume(self, volume):
+        '''
+        Sets volume for current motor sound if enabled.
+        '''
+
+        self.sounds[self.soundfile].set_volume(volume)
+
     def _startup(self):
 
         if not self.ready:
