@@ -22,11 +22,11 @@ class DX8(RC):
     Class for Spektrum DX8 transmitter used with Wailly PPM->USB cable.
     '''
 
-    def __init__(self, jsid=0, hidden=False):
+    def __init__(self, jsid=0, hidden=False, sound=False):
         '''
         Creates a new DX8 object.
         '''
-        RC.__init__(self, 'Spektrum', jsid, hidden)
+        RC.__init__(self, 'Spektrum', jsid, hidden, sound)
 
         # Default to Linux 
         self.pitch_axis  = 2

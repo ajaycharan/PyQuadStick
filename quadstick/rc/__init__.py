@@ -21,11 +21,11 @@ import quadstick
 
 class RC(quadstick.QuadStick):
 
-    def __init__(self, name, jsid=0, hidden=False):
+    def __init__(self, name, jsid=0, hidden=False, sound=False):
         '''
         Creates a new RC object.  Each subclass must implement the _convert_axis method.
         '''
-        quadstick.QuadStick.__init__(self, name, jsid, hidden)
+        quadstick.QuadStick.__init__(self, name, jsid, hidden, sound)
 
     def _get_pitch(self):
 

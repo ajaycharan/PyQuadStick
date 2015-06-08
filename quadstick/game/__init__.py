@@ -18,11 +18,11 @@ from quadstick import QuadStick
 
 class Game(QuadStick):
 
-    def __init__(self, name, jsid=0, hidden=False):
+    def __init__(self, name, jsid=0, hidden=False, sound=False):
         '''
         Creates a new Game object.
         '''
-        QuadStick.__init__(self, name, hidden)
+        QuadStick.__init__(self, name, hidden, sound)
 
         # Support alt/pos-hold through repeated button clicks
         self.buttonstate = 0

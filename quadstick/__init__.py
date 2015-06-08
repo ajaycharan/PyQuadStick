@@ -24,7 +24,7 @@ import os
 
 class QuadStick(object):
 
-    def __init__(self, name, jsid=0, hidden=False):
+    def __init__(self, name, jsid=0, hidden=False, sound=False):
         '''
         Creates a new QuadStick object.
         '''
@@ -63,12 +63,14 @@ class QuadStick(object):
         self.joystick.init()
         self.joystick.get_axis(jsid)
 
-        # Play quadcopter sound
+        # Enable sound
         pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
         datapath = os.path.abspath(os.path.dirname(__file__)) + '/data'
-        print(datapath)
-        self.sound = pygame.mixer.Sound(datapath + '/quadcopter.wav')
-        self.playing = False
+        self.sounds = []
+        for k in range(10,110,10):
+            self.sounds.append(pygame.mixer.Sound(datapath + ('/quadcopter%d.wav') % k))
+        self.wantsound = sound
+        self.soundfile = -1
 
         self.ready = False
 
@@ -109,11 +111,18 @@ class QuadStick(object):
 
         self._startup()
 
-        if not self.playing:
-            #self.sound.play(loops=-1) # continuous loop
-            self.playing = True
-
         demands = self._get_pitch(), self._get_roll(), self._get_yaw(), self._get_throttle()
+
+        if self.wantsound:
+
+            # Modulate sound by throttle
+            newfreq = int(10*demands[3])
+            if newfreq != self.soundfile:
+                FADE_MSEC = 400
+                if self.soundfile >= 0:
+                    self.sounds[self.soundfile].fadeout(FADE_MSEC)
+                self.soundfile = newfreq
+                self.sounds[self.soundfile].play(loops=-1, fade_ms=FADE_MSEC) # continuous loop
 
         switches = self._get_alt_hold(), self._get_pos_hold(), self._get_autopilot()
 
@@ -131,9 +140,6 @@ class QuadStick(object):
             self._show_switch(switches[1] and not switches[2], 1, 'Position hold')
 
             pygame.display.flip()
-
-        # Modulate sound by throttle
-        self.sound.set_volume(demands[3])
 
         return demands, switches
  

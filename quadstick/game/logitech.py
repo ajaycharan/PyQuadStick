@@ -21,11 +21,11 @@ import time
 
 class ExtremePro3D(Game):
 
-    def __init__(self, jsid=0, hidden=False):
+    def __init__(self, jsid=0, hidden=False, sound=False):
         '''
         Creates a new ExtremePro3D object.
         '''
-        Game.__init__(self, 'Logitech Extreme 3D Pro', jsid, hidden)
+        Game.__init__(self, 'Logitech Extreme 3D Pro', jsid, hidden, sound)
 
         self.trigger_is_down = False
 

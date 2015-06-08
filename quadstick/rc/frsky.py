@@ -23,12 +23,12 @@ class Taranis(RC):
     You should set up channel mixing such that Channel 5 maps to Switch A and Channel 6 to Switch B.
     '''
  
-    def __init__(self, jsid=0, hidden=False):
+    def __init__(self, jsid=0, hidden=False, sound=False):
         '''
         Creates a new Taranis object.
         '''
 
-        RC.__init__(self, 'Taranis', jsid, hidden)
+        RC.__init__(self, 'Taranis', jsid, hidden, sound)
 
         # Default to Linux 
         self.pitch_axis     = 2

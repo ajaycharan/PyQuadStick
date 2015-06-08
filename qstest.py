@@ -26,7 +26,7 @@ from quadstick.rc.frsky import Taranis as Controller
 # =============================================================================
 
 
-controller = Controller()
+controller = Controller(sound=True)
 
 while (controller.running()):
 
