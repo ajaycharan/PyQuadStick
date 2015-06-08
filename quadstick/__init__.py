@@ -24,7 +24,7 @@ import os
 
 class QuadStick(object):
 
-    def __init__(self, name, jsid=0, hidden=False, sound=False):
+    def __init__(self, name, switch_labels):
         '''
         Creates a new QuadStick object.
         '''
@@ -36,10 +36,9 @@ class QuadStick(object):
         pygame.init()
         pygame.display.init()
         
-        if not hidden:
-            self.screen = pygame.display.set_mode((500,280), pygame.locals.RESIZABLE)
-            self.font = pygame.font.SysFont('Courier', 20)
-            pygame.display.set_caption('QuadStick: ' + name)
+        self.screen = pygame.display.set_mode((500,280), pygame.locals.RESIZABLE)
+        self.font = pygame.font.SysFont('Courier', 20)
+        pygame.display.set_caption('QuadStick: ' + name)
 
         # Supports keyboard polling
         self.keys = []
@@ -56,12 +55,10 @@ class QuadStick(object):
 
         self.paused = False
 
-        self.hidden = hidden
-
         pygame.joystick.init()
-        self.joystick = pygame.joystick.Joystick(jsid)
+        self.joystick = pygame.joystick.Joystick(0)
         self.joystick.init()
-        self.joystick.get_axis(jsid)
+        self.joystick.get_axis(0)
 
         # Enable sound
         pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
@@ -69,10 +66,12 @@ class QuadStick(object):
         self.sounds = []
         for k in range(10,110,10):
             self.sounds.append(pygame.mixer.Sound(datapath + ('/quadcopter%d.wav') % k))
-        self.wantsound = sound
+        self.wantsound = False
         self.soundfile = -1
 
         self.ready = False
+
+        self.switch_labels = switch_labels
 
     def __str__(self):
         '''
@@ -105,14 +104,14 @@ class QuadStick(object):
 
             while True:
                 self._pump()
-                if self._get_throttle()  < .05 and not self._get_alt_hold_request():
+                if self._get_throttle()  < .05 and self._get_switchval() == 0:
                     break
 
             self.clear()
 
             self.ready = True
 
-    def _poll(self):
+    def poll(self):
 
         self._pump()
 
@@ -131,24 +130,20 @@ class QuadStick(object):
                 self.soundfile = newfreq
                 self.sounds[self.soundfile].play(loops=-1, fade_ms=FADE_MSEC) # continuous loop
 
-        switches = self._get_alt_hold(), self._get_pos_hold(), self._get_autopilot()
+        switchval = self._get_switchval()
 
-        if not self.hidden:
-
-            self._show_demand(demands, 0, -1, 'Pitch')
-            self._show_demand(demands, 1, -1, 'Roll')
-            self._show_demand(demands, 2, +1, 'Yaw')
-            self._show_demand(demands, 3, +1, 'Throttle') 
+        self._show_demand(demands, 0, -1, 'Pitch')
+        self._show_demand(demands, 1, -1, 'Roll')
+        self._show_demand(demands, 2, +1, 'Yaw')
+        self._show_demand(demands, 3, +1, 'Throttle') 
      
-            self._show_switch(switches[2], 2, 'Autopilot')
+        self._show_switch(switchval, 0)
+        self._show_switch(switchval, 1)
+        self._show_switch(switchval, 2)
 
-            # Autopilot turns off altitude hold, position hold
-            self._show_switch(switches[0] and not switches[2], 0, 'Altitude hold')
-            self._show_switch(switches[1] and not switches[2], 1, 'Position hold')
+        pygame.display.flip()
 
-            pygame.display.flip()
-
-        return demands, switches
+        return demands[0], demands[1], demands[2], demands[3], switchval
  
     def running(self):
         '''
@@ -212,8 +207,7 @@ class QuadStick(object):
 
         pygame.display.flip()
 
-
-    def _show_switch(self, switchval, index, label):
+    def _show_switch(self, switchval, index):
 
         x = 200
         y = 180 + index * 30
@@ -223,9 +217,9 @@ class QuadStick(object):
         pygame.draw.circle(self.screen, (255,255,255), (x, y), r, 1)
 
         # Draw a white or black disk inside the ring depending on switch state
-        pygame.draw.circle(self.screen, (255,255,255) if switchval else (0,0,0), (x, y), r-3)
+        pygame.draw.circle(self.screen, (255,255,255) if switchval == index else (0,0,0), (x, y), r-3)
 
-        self._draw_label(label, y-10)
+        self._draw_label(self.switch_labels[index], y-10)
 
     def _show_demand(self, demands, index, sign, label):
 

@@ -19,17 +19,14 @@ from quadstick.game import Game
 
 class PS3(Game):
 
-    def __init__(self, jsid=0, hidden=False, sound=False):
+    def __init__(self, switch_labels):
         '''
         Creates a new PS3 object.
         '''
-        Game.__init__(self, 'PS3', jsid, hidden, sound)
+        Game.__init__(self, 'PS3', switch_labels)
 
         # Special handling for OS X
         self.switch_axis = 9 if self.platform == 'Darwin' else 7
-
-        self.holdbutton = 0
-        self.autobutton = 7
 
         self.throttle = 0
 
@@ -38,23 +35,6 @@ class PS3(Game):
     def _startup(self):
 
         return
-
-    def poll(self):
-        '''
-        Polls the Sony PS3 controller:
-
-          Right joystick foward/back  : Pitch
-          Right joystick side-to-side : Roll
-          Left joystick side-to-side  : Yaw
-          Left joystick forward/back  : Climb/descend
-          R2 trigger:                 : Toggle autopilot
-
-        Altitude and position hold are always on.
-
-        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
-        '''
-
-        return Game._poll(self)
 
     def _get_pitch(self):
     

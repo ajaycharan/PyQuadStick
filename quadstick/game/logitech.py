@@ -21,18 +21,17 @@ import time
 
 class ExtremePro3D(Game):
 
-    def __init__(self, jsid=0, hidden=False, sound=False):
+    def __init__(self, switch_labels):
         '''
         Creates a new ExtremePro3D object.
         '''
-        Game.__init__(self, 'Logitech Extreme 3D Pro', jsid, hidden, sound)
+        Game.__init__(self, 'Logitech Extreme 3D Pro', switch_labels)
 
         self.trigger_is_down = False
 
         self.yaw_axis = 3 if self.platform == 'Windows' else 2
 
-        self.holdbutton = 1
-        self.autobutton = 0
+        self.button = 1
 
     def _startup_message(self):
 
@@ -43,23 +42,6 @@ class ExtremePro3D(Game):
         Game._pump(self)   
         return self.joystick.get_axis(3) 
  
-
-    def poll(self):
-        '''
-        Polls the Logitech joystick:
-
-          Foward/back      : Pitch
-          Side-to-side     : Roll
-          Twist:           : Yaw
-          Throttle         : Climb/descend
-          Trigger:         : Toggle autopilot
-
-        Altitude and position hold are always on.
-
-        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
-        '''
-
-        return Game._poll(self)
 
     def _get_pitch(self):
     

@@ -19,15 +19,15 @@ qstest.py - PyQuadStick test program
 # Choose your controller ======================================================
 
 #from quadstick.game.logitech import ExtremePro3D as Controller
-#from quadstick.game.sony import PS3 as Controller
+from quadstick.game.sony import PS3 as Controller
 #from quadstick.rc.spektrum import DX8 as Controller
-from quadstick.rc.frsky import Taranis as Controller
+#from quadstick.rc.frsky import Taranis as Controller
 
 # =============================================================================
 
 
-controller = Controller(sound=True)
+controller = Controller(('0', '1', '2'))
 
-while (controller.running()):
+while controller.running():
 
-    controller.poll()
+    print('%+3.3f %+3.3f %+3.3f %+3.3f %d' % controller.poll())

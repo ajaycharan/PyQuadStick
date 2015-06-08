@@ -23,12 +23,12 @@ class Taranis(RC):
     You should set up channel mixing such that Channel 5 maps to Switch A and Channel 6 to Switch B.
     '''
  
-    def __init__(self, jsid=0, hidden=False, sound=False):
+    def __init__(self, switch_labels):
         '''
         Creates a new Taranis object.
         '''
 
-        RC.__init__(self, 'Taranis', jsid, hidden, sound)
+        RC.__init__(self, 'Taranis', switch_labels)
 
         # Default to Linux 
         self.pitch_axis     = 2
@@ -52,110 +52,12 @@ class Taranis(RC):
         self.roll_sign  = -1
         self.yaw_sign   = +1
 
-    def poll(self):
-        '''
-        Polls the Taranis R/C transmitter.
-
-        Controls are Mode 2 (Left stick throttle / yaw; Right stick pitch / roll).
-
-        Altitude hold: Switch A halfway down
-        Position hold: Switch A completely down
-        Autopilot:     Switch B down (overrides altitude / position hold)
-
-        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
-        '''
-
-        return RC._poll(self)
-
     def _convert_axis(self, index, value):
 
         return value
 
-    def _get_alt_hold_request(self):
+    def _get_switchval(self):
 
         switch = RC._get_axis(self, self.switch_axis)
-        return switch > -1 and switch < +1
 
-    def _get_pos_hold_request(self):
-
-        return RC._get_axis(self, self.switch_axis) > 0.9
-
-    def _get_autopilot(self):
-        
-        # XXX Autopilot currently not supported for Taranis.
-        return False
-
-class TH9X(RC):
-    '''
-    Class for FrSky TH9X transmitter used with Wailly PPM->USB cable.
-    '''
-
-    def __init__(self, jsid=0, hidden=False):
-        '''
-        Creates a new TH9X object.
-        '''
-
-        RC.__init__(self, 'TH9X', jsid, hidden)
-
-    # Default to Linux 
-        self.pitch_axis  = 1
-        self.roll_axis   = 0
-        self.yaw_axis    = 5
-        self.throttle_axis  = 2
-        self.switch_axis = 3
-
-        if self.platform == 'Windows':
-            self.yaw_axis    = 3
-            self.switch_axis = 5
-
-        elif self.platform == 'Darwin':
-            self.pitch_axis  = 3
-            self.roll_axis   = 2
-            self.yaw_axis    = 1
-            self.throttle_axis  = 0
-            self.switch_axis = 4
-
-        self.pitch_sign = +1
-        self.roll_sign  = -1
-        self.yaw_sign   = +1
-
-    def poll(self):
-        '''
-        Polls the TH9X R/C transmitter.
-
-        Controls are Mode 2 (Left stick throttle / yaw; Right stick pitch / roll).
-
-        For altitude / position hold and autopilot, see 
-        http://3drobotics.com/wp-content/uploads/2014/04/IRIS-Flight-Checklist-v5.pdf
-
-        Returns demands (pitch, roll, yaw, throttle) and switches (pos-hold, alt-hold, autopilot).
-        '''
-
-        return RC._poll(self)
-
-    def _convert_axis(self, index, value):
-
-        maxval = 1
-
-        if index == 0:
-            maxval = 0.9
-        elif index == 1:
-            maxval = 0.8
-
-        return value / 0.7125 if value < 0 else value / maxval
-
-    def _get_alt_hold_request(self):
-
-        switch = RC._get_axis(self, self.switch_axis) 
-
-        return  switch > -0.3 and switch < 0.1
-
-    def _get_pos_hold_request(self):
-
-        switch = RC._get_axis(self, self.switch_axis) 
-
-        return  switch >= 0 and switch < 0.2
-
-    def _get_autopilot_request(self):
-
-        return RC._get_axis(self, self.switch_axis) > 0.1
+        return 0 if switch < -.5 else (1 if switch < +.5 else 2)
