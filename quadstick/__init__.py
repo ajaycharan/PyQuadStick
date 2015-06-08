@@ -73,11 +73,24 @@ class QuadStick(object):
 
         self.switch_labels = switch_labels
 
+
     def __str__(self):
         '''
         Returns a string representation of this QuadStick object
         '''
         return self.name
+
+    def soundOn(self):
+        '''
+        Turns the sound on
+        '''
+        self.wantsound = True
+
+    def soundOff(self):
+        '''
+        Turns the sound off
+        '''
+        self.wantsound = False
 
     def _pump(self):
 
