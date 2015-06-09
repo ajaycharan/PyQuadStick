@@ -43,10 +43,6 @@ class QuadStick(object):
         # Supports keyboard polling
         self.keys = []
 
-        # Supports autopilot toggling for non-R/C controllers
-        self.auto    = False
-        self.toggled = False
-
         self.name = name
 
         self.platform = platform()[0:platform().find('-')]
@@ -135,7 +131,7 @@ class QuadStick(object):
         if self.wantsound:
 
             # Modulate sound by throttle
-            newfreq = int(10*demands[3])
+            newfreq = int(9*demands[3])
             if newfreq != self.soundfile:
                 FADE_MSEC = 400
                 if self.soundfile >= 0:
@@ -280,18 +276,6 @@ class QuadStick(object):
         surface.set_colorkey( (0, 0, 0) )
  
         self.screen.blit(surface, (20, y))
- 
-
-    def _toggle_autopilot(self, trigger):
-
-        if trigger:
-            if not self.toggled:
-                self.auto = not self.auto
-            self.toggled = True
-        else:
-            self.toggled = False
-
-        return self.auto
 
     def _get_axis(self, k):
 
@@ -300,26 +284,3 @@ class QuadStick(object):
     def _get_button(self, k):
 
         return self.joystick.get_button(k)
-
-    def _get_alt_hold(self):
-
-        return self._get_alt_hold_request() and self._neutral_sticks()
-
-    def _get_pos_hold(self):
-
-        return self._get_pos_hold_request() and self._neutral_sticks()
-
-    def _neutral_sticks(self):
-
-        return self._safeband(self._get_throttle(), 0.5) and \
-                self._safestick(self._get_pitch()) and \
-                self._safestick(self._get_roll()) and \
-                self._safestick(self._get_yaw())
-
-    def _safestick(self, value):
-
-        return self._safeband(value, 0)
-
-    def _safeband(self, value, middle):
-
-        return value > (middle-self.BAND) and value < (middle+self.BAND)
