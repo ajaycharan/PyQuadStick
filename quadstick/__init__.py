@@ -284,3 +284,115 @@ class QuadStick(object):
     def _get_button(self, k):
 
         return self.joystick.get_button(k)
+
+
+class ExtremePro3D(QuadStick):
+
+    def __init__(self, switch_labels):
+        '''
+        Creates a new ExtremePro3D object.
+        '''
+        QuadStick.__init__(self, 'Logitech Extreme 3D Pro', switch_labels)
+
+        self.trigger_is_down = False
+
+        self.yaw_axis = 3 if self.platform == 'Windows' else 2
+
+        # Support alt/pos-hold through repeated button clicks
+        self.buttonstate = 0
+
+    def _get_switchval(self):
+
+        if self.joystick.get_button(0):
+            if self.buttonstate == 0:
+                self.buttonstate = 1
+            elif self.buttonstate == 2:
+                self.buttonstate = 3
+            elif self.buttonstate == 4:
+                self.buttonstate = 5
+        else:
+            if self.buttonstate == 1:
+                self.buttonstate = 2            
+                retval = 1
+            elif self.buttonstate == 3:
+                self.buttonstate = 4
+                retval = 2
+            elif self.buttonstate == 5:
+                self.buttonstate = 0
+
+        return [0,1,1,1,2,0][self.buttonstate]
+
+    def _startup_message(self):
+
+        return 'Please cycle throttle to begin.'
+
+    def _get_pitch(self):
+    
+        return QuadStick._get_axis(self, 1)
+
+    def _get_roll(self):
+    
+        return -QuadStick._get_axis(self, 0)
+
+    def _get_yaw(self):
+
+        return QuadStick._get_axis(self, self.yaw_axis)
+
+    def _get_throttle(self):
+
+        QuadStick._pump(self)   
+ 
+        return (-self.joystick.get_axis(3) + 1) / 2
+
+
+class PS3(QuadStick):
+
+    def __init__(self, switch_labels, throttle_inc=.001):
+        '''
+        Creates a new PS3 object.
+        '''
+        QuadStick.__init__(self, 'PS3', switch_labels)
+
+        # Special handling for OS X
+        self.switch_axis = 9 if self.platform == 'Darwin' else 7
+
+        self.throttle = 0
+
+        self.throttle_inc = throttle_inc
+
+        self.buttonstate = 0
+
+    def _startup(self):
+
+        return
+
+    def _get_pitch(self):
+    
+        return QuadStick._get_axis(self, 3)
+
+    def _get_roll(self):
+    
+        return -QuadStick._get_axis(self, 2)
+
+    def _get_yaw(self):
+
+        return QuadStick._get_axis(self, 0)
+
+    def _get_throttle(self):
+
+        self.throttle -= self.throttle_inc * QuadStick._get_axis(self, 1)
+
+        self.throttle = min(max(self.throttle, 0), 1)
+
+        return self.throttle
+
+    def _get_switchval(self):
+
+        if self._get_button(0):
+            self.buttonstate = 0
+        if self._get_button(3):
+            self.buttonstate = 1
+        if self._get_button(1):
+            self.buttonstate = 2
+
+        return self.buttonstate
