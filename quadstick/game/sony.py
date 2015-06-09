@@ -19,7 +19,7 @@ from quadstick.game import Game
 
 class PS3(Game):
 
-    def __init__(self, switch_labels):
+    def __init__(self, switch_labels, throttle_inc=.001):
         '''
         Creates a new PS3 object.
         '''
@@ -30,7 +30,7 @@ class PS3(Game):
 
         self.throttle = 0
 
-        self.THROTTLE_INC = .001
+        self.throttle_inc = throttle_inc
 
     def _startup(self):
 
@@ -50,7 +50,7 @@ class PS3(Game):
 
     def _get_throttle(self):
 
-        self.throttle -= self.THROTTLE_INC * Game._get_axis(self, 1)
+        self.throttle -= self.throttle_inc * Game._get_axis(self, 1)
 
         self.throttle = min(max(self.throttle, 0), 1)
 
