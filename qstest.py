@@ -28,8 +28,6 @@ from quadstick import PS3 as Controller
 
 controller = Controller(('0', '1', '2'))
 
-controller.soundOn()
-
 while controller.running():
 
     print('%+3.3f %+3.3f %+3.3f %+3.3f %d' % controller.poll())

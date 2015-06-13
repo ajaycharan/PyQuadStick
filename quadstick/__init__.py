@@ -20,7 +20,6 @@ import pygame.locals
 from platform import platform
 import sys
 import traceback
-import os
 
 class QuadStick(object):
 
@@ -56,15 +55,6 @@ class QuadStick(object):
         self.joystick.init()
         self.joystick.get_axis(0)
 
-        # Enable sound
-        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
-        datapath = os.path.abspath(os.path.dirname(__file__)) + '/data'
-        self.sounds = []
-        for k in range(10,110,10):
-            self.sounds.append(pygame.mixer.Sound(datapath + ('/quadcopter%d.wav') % k))
-        self.wantsound = False
-        self.soundfile = -1
-
         self.ready = False
 
         self.switch_labels = switch_labels
@@ -76,29 +66,10 @@ class QuadStick(object):
         '''
         return self.name
 
-    def soundOn(self):
-        '''
-        Turns the sound on
-        '''
-        self.wantsound = True
-
-    def soundOff(self):
-        '''
-        Turns the sound off
-        '''
-        self.wantsound = False
-
     def _pump(self):
 
         pygame.event.pump()   
 
-
-    def setVolume(self, volume):
-        '''
-        Sets volume for current motor sound if enabled.
-        '''
-
-        self.sounds[self.soundfile].set_volume(volume)
 
     def _startup(self):
 
@@ -127,17 +98,6 @@ class QuadStick(object):
         self._startup()
 
         demands = self._get_pitch(), self._get_roll(), self._get_yaw(), self._get_throttle()
-
-        if self.wantsound:
-
-            # Modulate sound by throttle
-            newfreq = int(9*demands[3])
-            if newfreq != self.soundfile:
-                FADE_MSEC = 400
-                if self.soundfile >= 0:
-                    self.sounds[self.soundfile].fadeout(FADE_MSEC)
-                self.soundfile = newfreq
-                self.sounds[self.soundfile].play(loops=-1, fade_ms=FADE_MSEC) # continuous loop
 
         switchval = self._get_switchval()
 
@@ -313,10 +273,8 @@ class ExtremePro3D(QuadStick):
         else:
             if self.buttonstate == 1:
                 self.buttonstate = 2            
-                retval = 1
             elif self.buttonstate == 3:
                 self.buttonstate = 4
-                retval = 2
             elif self.buttonstate == 5:
                 self.buttonstate = 0
 
