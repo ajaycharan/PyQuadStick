@@ -22,8 +22,6 @@ along with this code.  If not, see <http://www.gnu.org/licenses/>.
 #from distutils.core import setup
 from setuptools import setup
 
-soundfiles = [('data/quadcopter%s.wav' % freq) for freq in ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100']]
-
 setup (name = 'PyQuadStick',
     version = '0.1',
     install_requires = ['pygame'],
