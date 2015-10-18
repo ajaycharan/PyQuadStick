@@ -1,15 +1,9 @@
-from __future__ import print_function
-
-import sys
-import traceback
-import pygame
-import pygame.locals
-from platform import platform
-
 """
 A keyboard controller for PyQuadSim that simulates the sticks
 of a radio controller. Default configuration is in Mode 3,
 with arrows and qzsd keys. Switch button is left alt.
+
+Copyright (C) Kevin P (wazari972) 2015
 
 Configuration
 -------------
@@ -29,6 +23,14 @@ You may have to adjust it according to the pace of the simulator.
 
 > Keyboard.SLOWDOWN_FACTOR = 2 # keys will be twice less sensitive
 """
+
+from __future__ import print_function
+
+import sys
+import traceback
+import pygame
+import pygame.locals
+from platform import platform
 
 class GenericController(object):
     def __init__(self, name, switch_labels):
