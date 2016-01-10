@@ -305,7 +305,7 @@ class ExtremePro3D(QuadStick):
 
 class PS3(QuadStick):
 
-    def __init__(self, switch_labels, throttle_inc=.001):
+    def __init__(self, switch_labels, throttle_inc=.02):
         '''
         Creates a new PS3 object.
         '''
